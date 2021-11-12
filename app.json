@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "guiwoo-diary",
+    "slug": "guiwoo-diary",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "guiwoo-diary"
+}
