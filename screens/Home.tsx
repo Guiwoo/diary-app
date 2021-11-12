@@ -6,7 +6,7 @@ import colors from "../colors";
 
 const Container = styled.View`
   flex: 1;
-  padding: 0px 50px;
+  padding: 0px 30px;
   padding-top: 100px;
   background-color: ${colors.bgColor};
 `;
@@ -14,6 +14,7 @@ const Title = styled.Text`
   color: ${colors.textColor};
   font-size: 48px;
   margin-bottom: 100px;
+  margin: 50px 0px;
 `;
 const Btn = styled.TouchableOpacity`
   position: absolute;
