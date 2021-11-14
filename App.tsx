@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import Realm from "realm";
 import { NavigationContainer } from "@react-navigation/native";
 import AppLoading from "expo-app-loading";
 import Navigator from "./navigator";
+import { DBContext } from "./context";
+import Realm from "realm";
+import { hide } from "expo-splash-screen";
 
 const FeelingSchema = {
   name: "Feeling",
@@ -11,17 +13,19 @@ const FeelingSchema = {
     emotion: "string",
     message: "string",
   },
-  primarKey: "_id",
+  primaryKey: "_id",
 };
 
 export default function App() {
   const [ready, setReady] = useState(false);
+  const [realm, setRealm] = useState<Realm>(null as Realm);
   const onFinish = () => setReady(true);
   const startLoading = async () => {
-    const realm = await Realm.open({
-      path: "guiwooDiaryDB",
+    const connection: Realm = await Realm.open({
+      path: "nomadDiaryDB",
       schema: [FeelingSchema],
     });
+    setRealm(connection);
   };
   if (!ready) {
     return (
@@ -33,8 +37,10 @@ export default function App() {
     );
   }
   return (
-    <NavigationContainer>
-      <Navigator />
-    </NavigationContainer>
+    <DBContext.Provider value={realm}>
+      <NavigationContainer>
+        <Navigator />
+      </NavigationContainer>
+    </DBContext.Provider>
   );
 }
