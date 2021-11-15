@@ -4,7 +4,6 @@ import AppLoading from "expo-app-loading";
 import Navigator from "./navigator";
 import { DBContext } from "./context";
 import Realm from "realm";
-import { hide } from "expo-splash-screen";
 
 const FeelingSchema = {
   name: "Feeling",
