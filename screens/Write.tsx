@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AdMobInterstitial, AdMobRewarded } from "expo-ads-admob";
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import styled from "styled-components/native";
@@ -73,21 +74,26 @@ const Write: React.FC<WriteProp> = ({ navigation: { goBack } }) => {
   //functions
   const onChnageText = (text: string) => setFeelings(text);
   const onEmotionPress = (face: string) => setEmotion(face);
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (feelings === "" || selectedEmotion == null) {
       return Alert.alert("Please complete form.");
     }
-    //hit the db
-    realm.write(() => {
-      const feeling = realm.create("Feeling", {
-        _id: Date.now(),
-        emotion: selectedEmotion,
-        message: feelings,
+    await AdMobRewarded.setAdUnitID("ca-app-pub-3940256099942544/1712485313");
+    await AdMobRewarded.requestAdAsync();
+    await AdMobRewarded.showAdAsync();
+    AdMobRewarded.addEventListener("rewardedVideoUserDidEarnReward", () => {
+      AdMobRewarded.addEventListener("rewardedVideoDidPresent", () => {
+        realm.write(() => {
+          realm.create("Feeling", {
+            _id: Date.now(),
+            emotion: selectedEmotion,
+            message: feelings,
+          });
+        });
+        goBack();
       });
     });
-    goBack();
   };
-
   return (
     <Container>
       <Title>How do you feel today ?</Title>

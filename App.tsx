@@ -4,6 +4,7 @@ import AppLoading from "expo-app-loading";
 import Navigator from "./navigator";
 import { DBContext } from "./context";
 import Realm from "realm";
+import { setTestDeviceIDAsync } from "expo-ads-admob";
 
 const FeelingSchema = {
   name: "Feeling",
@@ -20,6 +21,7 @@ export default function App() {
   const [realm, setRealm] = useState<Realm>(null as Realm);
   const onFinish = () => setReady(true);
   const startLoading = async () => {
+    await setTestDeviceIDAsync("EMULATOR");
     const connection: Realm = await Realm.open({
       path: "nomadDiaryDB",
       schema: [FeelingSchema],

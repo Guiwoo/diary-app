@@ -7,8 +7,11 @@ import { useDB } from "../context";
 import { FlatList } from "react-native-gesture-handler";
 import { Results } from "realm";
 import { LayoutAnimation, TouchableOpacity } from "react-native";
+import { AdMobBanner } from "expo-ads-admob";
 
 const Container = styled.View`
+  align-items: center;
+  justify-content: center;
   flex: 1;
   padding: 0px 30px;
   padding-top: 100px;
@@ -19,6 +22,7 @@ const Title = styled.Text`
   font-size: 48px;
   margin-bottom: 100px;
   margin: 50px 0px;
+  width: 100%;
 `;
 const Btn = styled.TouchableOpacity`
   position: absolute;
@@ -79,7 +83,14 @@ const Home: React.FC<HomeProp> = ({ navigation: { navigate } }) => {
   return (
     <Container>
       <Title>My Journal</Title>
+      <AdMobBanner
+        bannerSize="largeBanner"
+        adUnitID="ca-app-pub-3940256099942544/2934735716" // Test ID, Replace with your-admob-unit-id
+        servePersonalizedAds // true or false
+        onDidFailToReceiveAdWithError={this.bannerError}
+      />
       <FlatList
+        style={{ marginVertical: 50, width: "100%" }}
         contentContainerStyle={{ paddingVertical: 10 }}
         ItemSeparatorComponent={Seperator}
         data={feelings}
