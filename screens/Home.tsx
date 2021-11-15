@@ -6,6 +6,7 @@ import colors from "../colors";
 import { useDB } from "../context";
 import { FlatList } from "react-native-gesture-handler";
 import { Results } from "realm";
+import { LayoutAnimation, TouchableOpacity } from "react-native";
 
 const Container = styled.View`
   flex: 1;
@@ -61,15 +62,20 @@ const Home: React.FC<HomeProp> = ({ navigation: { navigate } }) => {
   const [feelings, setFeelings] = useState<Results<Realm.Object>>();
   useEffect(() => {
     const feeling = realm.objects("Feeling");
-    setFeelings(feeling);
-    feeling.addListener(() => {
-      const feeling = realm.objects("Feeling");
-      setFeelings(feeling);
+    feeling.addListener((feelings, changes) => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.spring); // fade in & fade out awesome
+      setFeelings(feelings.sorted("_id", false));
     });
     return () => {
       feeling.removeAllListeners();
     };
   }, []);
+  const deleteComponent = (id: number) => {
+    realm.write(() => {
+      const feeling = realm.objectForPrimaryKey("Feeling", id);
+      realm.delete(feeling);
+    });
+  };
   return (
     <Container>
       <Title>My Journal</Title>
@@ -79,10 +85,12 @@ const Home: React.FC<HomeProp> = ({ navigation: { navigate } }) => {
         data={feelings}
         keyExtractor={(feeling) => feeling._id + ""}
         renderItem={({ item }) => (
-          <Record>
-            <Emotion>{item.emotion}</Emotion>
-            <Message>{item.message}</Message>
-          </Record>
+          <TouchableOpacity onPress={() => deleteComponent(item._id)}>
+            <Record>
+              <Emotion>{item.emotion}</Emotion>
+              <Message>{item.message}</Message>
+            </Record>
+          </TouchableOpacity>
         )}
       />
       <Btn onPress={() => navigate("Write")}>
